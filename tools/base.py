@@ -1,6 +1,6 @@
 import requests
 
-API_ENDPOINT = "https://api.minimaxi.com/v1"
+API_ENDPOINT = "https://api.minimax.io/v1"
 
 
 class MiniMaxBaseTool:
@@ -30,17 +30,23 @@ class MiniMaxBaseTool:
         prompt_optimizer: bool,
         n: int,
     ) -> requests.Response:
+        payload = {
+            "model": model,
+            "prompt": prompt,
+            "response_format": response_format,
+            "prompt_optimizer": prompt_optimizer,
+            "n": n,
+        }
+        if aspect_ratio == "1:1":
+            payload["width"] = 512
+            payload["height"] = 512
+        else:
+            payload["aspect_ratio"] = aspect_ratio
+
         response = self._request(
             "POST",
             f"{API_ENDPOINT}/image_generation",
-            json={
-                "model": model,
-                "prompt": prompt,
-                "aspect_ratio": aspect_ratio,
-                "response_format": response_format,
-                "prompt_optimizer": prompt_optimizer,
-                "n": n,
-            },
+            json=payload,
         )
         return response
 
