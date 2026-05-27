@@ -1,8 +1,10 @@
 from collections.abc import Generator
 from typing import Any
+import requests
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 from tools.base import MiniMaxBaseTool
+from tools.image_processing import resize_image_to_eggi_width
 
 
 class MiniMaxImageGenerationTool(Tool):
@@ -41,11 +43,32 @@ class MiniMaxImageGenerationTool(Tool):
             yield self.create_text_message(f"Image generation failed {response.text}")
             return
 
+        processed_images = []
         for image_url in image_urls:
-            yield self.create_image_message(image_url)
+            image_response = requests.get(image_url, timeout=30)
+            if image_response.status_code != 200:
+                yield self.create_text_message(
+                    f"Image resize failed {image_response.status_code} {image_response.text}"
+                )
+                return
+
+            resized_image = resize_image_to_eggi_width(image_response.content)
+            yield self.create_blob_message(
+                blob=resized_image.blob,
+                meta={"mime_type": resized_image.mime_type},
+            )
+            processed_images.append(
+                {
+                    "source_url": image_url,
+                    "width": resized_image.width,
+                    "height": resized_image.height,
+                    "mime_type": resized_image.mime_type,
+                }
+            )
 
         image_data = {
             "image_urls": image_urls,
+            "processed_images": processed_images,
         }
 
         yield self.create_json_message(image_data)
