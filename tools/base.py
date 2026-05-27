@@ -1,3 +1,5 @@
+from typing import Optional
+
 import requests
 
 API_ENDPOINT = "https://api.minimax.io/v1"
@@ -29,6 +31,7 @@ class MiniMaxBaseTool:
         response_format: str,
         prompt_optimizer: bool,
         n: int,
+        reference_image_url: Optional[str] = None,
     ) -> requests.Response:
         payload = {
             "model": model,
@@ -42,6 +45,14 @@ class MiniMaxBaseTool:
             payload["height"] = 512
         else:
             payload["aspect_ratio"] = aspect_ratio
+
+        if reference_image_url:
+            payload["subject_reference"] = [
+                {
+                    "type": "character",
+                    "image_file": reference_image_url,
+                }
+            ]
 
         response = self._request(
             "POST",

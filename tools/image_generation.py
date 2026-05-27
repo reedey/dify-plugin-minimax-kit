@@ -18,6 +18,7 @@ class MiniMaxImageGenerationTool(Tool):
         aspect_ratio = tool_parameters.get("aspect_ratio")
         prompt_optimizer = tool_parameters.get("prompt_optimizer")
         n = tool_parameters.get("n")
+        reference_image_url = tool_parameters.get("reference_image_url")
 
         response = minimax.text_to_image(
             model=model,
@@ -26,6 +27,7 @@ class MiniMaxImageGenerationTool(Tool):
             response_format="url",
             prompt_optimizer=prompt_optimizer,
             n=n,
+            reference_image_url=reference_image_url,
         )
         if response.status_code != 200:
             yield self.create_text_message(
@@ -69,6 +71,7 @@ class MiniMaxImageGenerationTool(Tool):
         image_data = {
             "image_urls": image_urls,
             "processed_images": processed_images,
+            "reference_image_url": reference_image_url,
         }
 
         yield self.create_json_message(image_data)

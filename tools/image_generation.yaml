@@ -40,6 +40,16 @@ parameters:
       en_US: Generate the description of the image.
       zh_CN: 生成图像的描述
     form: llm
+  - name: reference_image_url
+    type: string
+    required: false
+    label:
+      en_US: Reference Image URL
+      zh_Hans: 垫图 URL
+    human_description:
+      en_US: Publicly accessible image URL used as a MiniMax subject reference.
+      zh_CN: 作为 MiniMax 主体参考的公网图片 URL。
+    form: form
   - name: aspect_ratio
     type: select
     required: false
