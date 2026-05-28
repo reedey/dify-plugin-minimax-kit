@@ -5,7 +5,7 @@ from tools import base
 
 
 class MiniMaxBaseToolTest(unittest.TestCase):
-    def test_text_to_image_uses_global_endpoint_and_512_square_payload(self):
+    def test_text_to_image_uses_global_endpoint_and_default_square_payload(self):
         captured_request = {}
 
         def fake_request(method, url, **kwargs):
@@ -30,9 +30,9 @@ class MiniMaxBaseToolTest(unittest.TestCase):
             captured_request["url"], "https://api.minimax.io/v1/image_generation"
         )
         payload = captured_request["kwargs"]["json"]
-        self.assertEqual(payload["width"], 512)
-        self.assertEqual(payload["height"], 512)
-        self.assertNotIn("aspect_ratio", payload)
+        self.assertEqual(payload["aspect_ratio"], "1:1")
+        self.assertNotIn("width", payload)
+        self.assertNotIn("height", payload)
 
     def test_text_to_image_keeps_non_square_aspect_ratio_payload(self):
         captured_request = {}

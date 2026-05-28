@@ -40,13 +40,7 @@ class MiniMaxBaseTool:
             "prompt_optimizer": prompt_optimizer,
             "n": n,
         }
-        if reference_image_url:
-            payload["aspect_ratio"] = aspect_ratio
-        elif aspect_ratio == "1:1":
-            payload["width"] = 512
-            payload["height"] = 512
-        else:
-            payload["aspect_ratio"] = aspect_ratio
+        payload["aspect_ratio"] = aspect_ratio
 
         if reference_image_url:
             payload["subject_reference"] = [
