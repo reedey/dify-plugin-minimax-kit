@@ -81,6 +81,9 @@ class MiniMaxBaseToolTest(unittest.TestCase):
             )
 
         payload = captured_request["kwargs"]["json"]
+        self.assertEqual(payload["aspect_ratio"], "1:1")
+        self.assertNotIn("width", payload)
+        self.assertNotIn("height", payload)
         self.assertEqual(
             payload["subject_reference"],
             [
